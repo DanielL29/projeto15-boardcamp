@@ -10,14 +10,14 @@ async function getGames(req, res) {
                     SELECT g.*, c.name as categoryName 
                     FROM games g, categories c 
                     WHERE c.id = g."categoryId" AND LOWER(g.name)
-                    LIKE $1
+                    LIKE LOWER($1)
                 ` : 
                 `
                     SELECT g.*, c.name as categoryName 
                     FROM games g, categories c
                     WHERE c.id = g."categoryId"
                 `
-            , name ? [`${name.toLowerCase()}%`] : ''
+            , name ? [`${name}%`] : ''
         )
 
         res.status(200).send(games)
