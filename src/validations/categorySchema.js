@@ -21,4 +21,4 @@ async function validateCategorySchema(req, res, next) {
     next()
 }
 
-export { validateCategorySchema }
+export default validateCategorySchema

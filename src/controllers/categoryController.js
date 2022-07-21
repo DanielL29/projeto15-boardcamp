@@ -14,7 +14,7 @@ async function createCategory(req, res) {
     const { name } = req.body
 
     try {
-        await connection.query(`INSERT INTO categories (name) VALUES ('${name}')`)
+        await connection.query(`INSERT INTO categories (name) VALUES ($1)`, [name])
 
         res.sendStatus(201)
     } catch (err) {
