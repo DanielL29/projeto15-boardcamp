@@ -2,11 +2,10 @@ import connection from "../database/db.js"
 import { insertGameQuery, selectGamesQuery } from "../database/queries/gameQueries.js"
 
 async function getGames(req, res) {
-    const { name } = req.query
-    const isNameQuery = name ? [`${name}%`] : ''
+    const { name, offset, limit } = req.query
 
     try {
-        const { rows: games } = await connection.query(selectGamesQuery(name), isNameQuery)
+        const { rows: games } = await connection.query(selectGamesQuery(name, offset, limit))
 
         res.status(200).send(games)
     } catch (err) {
