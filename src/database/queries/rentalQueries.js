@@ -1,8 +1,10 @@
-const selectRentalQuery = (customerId, gameId, offset, limit) => {
+const selectRentalQuery = (customerId, gameId, offset, limit, order, desc) => {
     const isCustomerId = customerId ? `AND c.id = ${customerId}` : ''
     const isGameId = gameId ? `AND g.id = ${gameId}` : ''
     const isOffSet = offset ? `OFFSET ${offset}` : ''
     const isLimit = limit ? `LIMIT ${limit}` : ''
+    const isOrder = order ? `ORDER BY r."${order}"` : ''
+    const isDesc = desc === 'true' ? 'DESC' : ''
 
     return `
         SELECT r.*, r."rentDate"::VARCHAR, 
@@ -26,8 +28,8 @@ const selectRentalQuery = (customerId, gameId, offset, limit) => {
         AND g."categoryId" = ca.id
         ${isCustomerId}
         ${isGameId}
-        ${isOffSet}
-        ${isLimit}
+        ${isOrder} ${isDesc}
+        ${isOffSet} ${isLimit}
     `
 }
 

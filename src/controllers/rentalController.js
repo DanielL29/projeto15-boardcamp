@@ -3,10 +3,10 @@ import dayjs from 'dayjs'
 import { insertRentalQuery, selectRentalQuery, updateRentalQuery } from "../database/queries/rentalQueries.js"
 
 async function getRentals(req, res) {
-    const { customerId, gameId, offset, limit } = req.query
+    const { customerId, gameId, offset, limit, order, desc } = req.query
 
     try {
-        const { rows: rentals } = await connection.query(selectRentalQuery(customerId, gameId, offset, limit))
+        const { rows: rentals } = await connection.query(selectRentalQuery(customerId, gameId, offset, limit, order, desc))
 
         res.status(200).send(rentals)
     } catch (err) {
@@ -39,10 +39,14 @@ async function createRental(req, res) {
 
 async function finalizeRental(req, res) {
     const { rentalId } = req.params
-    const { pricePerDay, rentDate } = res.locals
+    const { pricePerDay, rentDate, daysRented } = res.locals
+    let delayFee;
 
     try {
-        const delayFee = dayjs().diff(rentDate, 'day')
+        const isDelay = dayjs().diff(rentDate, 'day')
+
+        if(isDelay > daysRented) delayFee = isDelay - daysRented
+        else delayFee = 0
 
         await connection.query(updateRentalQuery, [dayjs().format('YYYY-MM-DD'), delayFee * pricePerDay, rentalId])
 

@@ -1,14 +1,16 @@
-const selectCustomersQuery = (cpf, offset, limit) => {
+const selectCustomersQuery = (cpf, offset, limit, order, desc) => {
     const isOffSet = offset ? `OFFSET ${offset}` : ''
     const isLimit = limit ? `LIMIT ${limit}` : ''
     const isCPF = cpf ? `WHERE cpf LIKE '${cpf}%'` : ''
+    const isOrder = order ? `ORDER BY "${order}"` : ''
+    const isDesc = desc === 'true' ? 'DESC' : ''
 
     return  `
         SELECT id, name, phone, cpf, birthday::VARCHAR 
         FROM customers
         ${isCPF}
-        ${isOffSet}
-        ${isLimit}
+        ${isOrder} ${isDesc}
+        ${isOffSet} ${isLimit}
     `
 }
 

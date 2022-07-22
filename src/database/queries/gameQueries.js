@@ -1,15 +1,17 @@
-const selectGamesQuery = (name, offset, limit) => {
+const selectGamesQuery = (name, offset, limit, order, desc) => {
     const isOffSet = offset ? `OFFSET ${offset}` : ''
     const isLimit = limit ? `LIMIT ${limit}` : ''
     const isName = name ? `AND LOWER(g.name) LIKE '${name.toLowerCase()}%'` : ''
+    const isOrder = order ? `ORDER BY "${order}"` : ''
+    const isDesc = desc === 'true' ? 'DESC' : ''
 
     return `
-        SELECT g.*, c.name as categoryName 
+        SELECT g.*, c.name as "categoryName" 
         FROM games g, categories c 
         WHERE c.id = g."categoryId"
         ${isName}
-        ${isOffSet}
-        ${isLimit}
+        ${isOrder} ${isDesc}
+        ${isOffSet} ${isLimit}
     `
 }
 

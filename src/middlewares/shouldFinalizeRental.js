@@ -1,6 +1,8 @@
 import connection from "../database/db.js"
 
 async function shouldFinalizeRental(req, res, next) {
+    const { rentalId } = req.params
+
     const { rows: rental } = await connection.query('SELECT * FROM rentals WHERE id = $1', [rentalId])
     const { rows: game } = await connection.query('SELECT * FROM games WHERE id = $1', [rental[0].gameId])
 
@@ -12,6 +14,7 @@ async function shouldFinalizeRental(req, res, next) {
 
     res.locals.pricePerDay = game[0].pricePerDay
     res.locals.rentDate = rental[0].rentDate
+    res.locals.daysRented = rental[0].daysRented
 
     next()
 }

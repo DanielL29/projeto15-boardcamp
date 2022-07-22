@@ -2,10 +2,10 @@ import connection from "../database/db.js"
 import { insertCategoryQuery, selectCategoryQuery } from "../database/queries/categoryQueries.js"
 
 async function getCategories(req, res) {
-    const { offset, limit } = req.query
+    const { offset, limit, order, desc } = req.query
 
     try {
-        const { rows: categories } = await connection.query(selectCategoryQuery(offset, limit))
+        const { rows: categories } = await connection.query(selectCategoryQuery(offset, limit, order, desc))
 
         res.status(200).send(categories)
     } catch (err) {
