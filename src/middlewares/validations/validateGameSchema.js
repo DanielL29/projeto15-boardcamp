@@ -1,16 +1,8 @@
-import joi from 'joi'
-import connection from '../database/db.js'
+import connection from '../../database/db.js'
+import gameSchema from '../../schemas/gameSchema.js'
 
 async function validateGameSchema(req, res, next) {
     const { categoryId, name } = req.body
-
-    const gameSchema = joi.object({
-        name: joi.string().required(),
-        image: joi.string().pattern(/(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png)/).required(),
-        stockTotal: joi.number().min(1).required(),
-        categoryId: joi.number().required(),
-        pricePerDay: joi.number().min(1).required(),
-    })
 
     const { error } = gameSchema.validate(req.body, { abortEarly: false })
 

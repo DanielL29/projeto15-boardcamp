@@ -1,14 +1,8 @@
-import joi from 'joi'
-import connection from '../database/db.js'
+import connection from '../../database/db.js'
+import rentalSchema from '../../schemas/rentalSchema.js'
 
 async function validateRentalSchema(req, res, next) {
     const { customerId, gameId } = req.body
-
-    const rentalSchema = joi.object({
-        customerId: joi.number().required(),
-        gameId: joi.number().required(),
-        daysRented: joi.number().min(1).required()
-    })
 
     const { error } = rentalSchema.validate(req.body, { abortEarly: false })
 

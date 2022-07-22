@@ -1,11 +1,7 @@
-import joi from 'joi'
-import connection from '../database/db.js'
+import connection from '../../database/db.js'
+import categorySchema from '../../schemas/categorySchema.js'
 
 async function validateCategorySchema(req, res, next) {
-    const categorySchema = joi.object({
-        name: joi.string().required()
-    })
-
     const { error } = categorySchema.validate(req.body)
 
     if(error) {
