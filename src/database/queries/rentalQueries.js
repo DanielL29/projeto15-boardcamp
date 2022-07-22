@@ -1,15 +1,20 @@
-const selectRentalQuery = (customerId, gameId, offset, limit, order, desc) => {
+const selectRentalQuery = (customerId, gameId, offset, limit, order, desc, status, startDate) => {
     const isCustomerId = customerId ? `AND c.id = ${customerId}` : ''
     const isGameId = gameId ? `AND g.id = ${gameId}` : ''
     const isOffSet = offset ? `OFFSET ${offset}` : ''
     const isLimit = limit ? `LIMIT ${limit}` : ''
     const isOrder = order ? `ORDER BY r."${order}"` : ''
     const isDesc = desc === 'true' ? 'DESC' : ''
+    const isStatus = status && status === 'open' ? 
+        `AND "returnDate" IS NULL` : 
+        status && status === 'closed' ? 
+        `AND "returnDate" IS NOT NULL` : ''
+    const isStartDate = startDate ? `AND r."rentDate" >= '${startDate}'` : ''
 
     return `
         SELECT r.*, r."rentDate"::VARCHAR, 
             (CASE
-                WHEN r."returnDate"::VARCHAR != 'null' THEN r."returnDate"::VARCHAR
+                WHEN r."returnDate" IS NOT NULL THEN r."returnDate"::VARCHAR
                 ELSE null
             END) as "returnDate", 
             jsonb_build_object(
@@ -26,6 +31,8 @@ const selectRentalQuery = (customerId, gameId, offset, limit, order, desc) => {
         WHERE r."customerId" = c.id 
         AND r."gameId" = g.id 
         AND g."categoryId" = ca.id
+        ${isStatus}
+        ${isStartDate}
         ${isCustomerId}
         ${isGameId}
         ${isOrder} ${isDesc}
