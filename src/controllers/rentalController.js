@@ -3,12 +3,10 @@ import dayjs from 'dayjs'
 import { insertRentalQuery, selectRentalQuery, updateRentalQuery } from "../database/queries/rentalQueries.js"
 
 async function getRentals(req, res) {
-    const { customerId, gameId } = req.query
-    const query = customerId ? [customerId] : gameId ? [gameId] : ''
-    const selectAND = customerId ? 'AND c.id = $1' : gameId ? 'AND g.id = $1' : ''
+    const { customerId, gameId, offset, limit } = req.query
 
     try {
-        const { rows: rentals } = await connection.query(selectRentalQuery(selectAND), query)
+        const { rows: rentals } = await connection.query(selectRentalQuery(customerId, gameId, offset, limit))
 
         res.status(200).send(rentals)
     } catch (err) {

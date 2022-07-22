@@ -1,5 +1,10 @@
-const selectRentalQuery = (selectAND) => 
-    `
+const selectRentalQuery = (customerId, gameId, offset, limit) => {
+    const isCustomerId = customerId ? `AND c.id = ${customerId}` : ''
+    const isGameId = gameId ? `AND g.id = ${gameId}` : ''
+    const isOffSet = offset ? `OFFSET ${offset}` : ''
+    const isLimit = limit ? `LIMIT ${limit}` : ''
+
+    return `
         SELECT r.*, r."rentDate"::VARCHAR, 
             (CASE
                 WHEN r."returnDate"::VARCHAR != 'null' THEN r."returnDate"::VARCHAR
@@ -19,8 +24,12 @@ const selectRentalQuery = (selectAND) =>
         WHERE r."customerId" = c.id 
         AND r."gameId" = g.id 
         AND g."categoryId" = ca.id
-        ${selectAND}
+        ${isCustomerId}
+        ${isGameId}
+        ${isOffSet}
+        ${isLimit}
     `
+}
 
 const insertRentalQuery = `
     INSERT INTO rentals
