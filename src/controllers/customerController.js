@@ -2,11 +2,10 @@ import connection from "../database/db.js"
 import { insertCustomerQuery, selectCustomerQuery, selectCustomersQuery, updateCustomerQuery } from "../database/queries/customerQueries.js"
 
 async function getCustomers(req, res) {
-    const { cpf } = req.query
-    const isCpfQuery = cpf ? [`${cpf}%`] : ''
+    const { cpf, offset, limit } = req.query
 
     try {
-        const { rows: customers } = await connection.query(selectCustomersQuery(cpf), isCpfQuery)
+        const { rows: customers } = await connection.query(selectCustomersQuery(cpf, offset, limit))
 
         res.status(200).send(customers)
     } catch (err) {

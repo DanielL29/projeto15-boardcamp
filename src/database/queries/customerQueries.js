@@ -1,14 +1,16 @@
-const selectCustomersQuery = cpf => 
-    cpf ? 
-    `
+const selectCustomersQuery = (cpf, offset, limit) => {
+    const isOffSet = offset ? `OFFSET ${offset}` : ''
+    const isLimit = limit ? `LIMIT ${limit}` : ''
+    const isCPF = cpf ? `WHERE cpf LIKE '${cpf}%'` : ''
+
+    return  `
         SELECT id, name, phone, cpf, birthday::VARCHAR 
         FROM customers
-        WHERE cpf LIKE $1
-    ` : 
+        ${isCPF}
+        ${isOffSet}
+        ${isLimit}
     `
-        SELECT id, name, phone, cpf, birthday::VARCHAR 
-        FROM customers
-    `
+}
 
 const selectCustomerQuery = `
     SELECT id, name, phone, cpf, birthday::VARCHAR 
