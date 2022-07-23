@@ -6,11 +6,13 @@ const selectCustomersQuery = (cpf, offset, limit, order, desc) => {
     const isDesc = desc === 'true' ? 'DESC' : ''
 
     return  `
-        SELECT id, name, phone, cpf, birthday::VARCHAR 
-        FROM customers
+        SELECT c.*, c.birthday::VARCHAR,
+            COUNT(CASE WHEN r."customerId" = c.id THEN c.id END)::float as "rentalsCount"
+        FROM customers c, rentals r
         ${isCPF}
         ${isOrder} ${isDesc}
         ${isOffSet} ${isLimit}
+        GROUP BY c.id
     `
 }
 

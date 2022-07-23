@@ -6,12 +6,14 @@ const selectGamesQuery = (name, offset, limit, order, desc) => {
     const isDesc = desc === 'true' ? 'DESC' : ''
 
     return `
-        SELECT g.*, c.name as "categoryName" 
-        FROM games g, categories c 
+        SELECT g.*, c.name as "categoryName", 
+            COUNT(CASE WHEN r."gameId" = g.id THEN g.id END)::float as "rentalsCount"
+        FROM games g, categories c, rentals r
         WHERE c.id = g."categoryId"
         ${isName}
         ${isOrder} ${isDesc}
         ${isOffSet} ${isLimit}
+        GROUP BY g.id, c.name
     `
 }
 
