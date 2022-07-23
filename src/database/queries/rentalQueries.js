@@ -60,4 +60,20 @@ const updateRentalQuery = `
     WHERE id = $3
 `
 
-export { selectRentalQuery, insertRentalQuery, updateRentalQuery }
+const billingQuery = (startDate, endDate) => {
+    const whereDate = startDate && endDate ? 
+        `WHERE "rentDate" >= '${startDate}' AND "rentDate" <= '${endDate}'` : 
+        startDate ? `WHERE "rentDate" >= '${startDate}'` : 
+        endDate ? `WHERE "rentDate" <= '${endDate}'` : ''
+
+    return `
+        SELECT 
+            SUM("originalPrice") + SUM("delayFee")::float as revenue, 
+            COUNT(*)::float as rentals, 
+            (SUM("originalPrice") + SUM("delayFee")) / COUNT(*)::float as average 
+        FROM rentals
+        ${whereDate}
+    `
+}
+
+export { selectRentalQuery, insertRentalQuery, updateRentalQuery, billingQuery }

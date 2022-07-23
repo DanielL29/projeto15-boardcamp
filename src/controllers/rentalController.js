@@ -1,6 +1,6 @@
 import connection from "../database/db.js"
 import dayjs from 'dayjs'
-import { insertRentalQuery, selectRentalQuery, updateRentalQuery } from "../database/queries/rentalQueries.js"
+import { billingQuery, insertRentalQuery, selectRentalQuery, updateRentalQuery } from "../database/queries/rentalQueries.js"
 
 async function getRentals(req, res) {
     const { 
@@ -78,4 +78,17 @@ async function deleteRental(req, res) {
     }
 }
 
-export { getRentals, createRental, finalizeRental, deleteRental }
+async function getBilling(req, res) {
+    const { startDate, endDate } = req.query
+
+    try {
+        const { rows: billing } = await connection.query(billingQuery(startDate, endDate))
+
+        res.status(200).send(billing[0])
+    } catch (err) {
+        console.log(err)
+        res.status(500).send(err)
+    }
+}
+
+export { getRentals, createRental, finalizeRental, deleteRental, getBilling }
