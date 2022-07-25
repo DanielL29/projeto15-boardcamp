@@ -5,6 +5,12 @@ async function validateCustomerSchema(req, res, next) {
     const { cpf } = req.body
     const { customerId } = req.params
 
+    const { rows: customerExists } = await connection.query('SELECT * FROM customers WHERE id = $1', [customerId])
+
+    if(customerExists.length === 0) {
+        return res.sendStatus(404)
+    }
+
     const { error } = customerSchema.validate(req.body, { abortEarly: false })
 
     if(error) {
