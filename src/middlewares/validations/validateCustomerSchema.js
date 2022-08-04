@@ -7,7 +7,7 @@ async function validateCustomerSchema(req, res, next) {
 
     const { rows: customerExists } = await connection.query('SELECT * FROM customers WHERE id = $1', [customerId])
 
-    if(customerExists.length === 0) {
+    if(customerExists.length === 0 && customerId) {
         return res.sendStatus(404)
     }
 

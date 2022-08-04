@@ -5,7 +5,8 @@ async function getCustomers(req, res) {
     const { cpf, offset, limit, order, desc } = req.query
 
     try {
-        const { rows: customers } = await connection.query(selectCustomersQuery(cpf, offset, limit, order, desc))
+        const { rowCount: rentals } = await connection.query('select * from rentals')
+        const { rows: customers } = await connection.query(selectCustomersQuery(cpf, offset, limit, order, desc, rentals))
 
         res.status(200).send(customers)
     } catch (err) {
